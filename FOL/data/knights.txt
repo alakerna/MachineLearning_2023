@@ -1,0 +1,216 @@
+echo on
+new-kb
+
+// Q3.2: Common Knowledge
+// The following axioms are in conjunction: 
+// 1) (I_AK | I_AN) ^ ~(I_AK ^ I_AN)
+// 2) (I_BK | I_BN) ^ ~(I_BK ^ I_BN)
+// 3) (I_CK | I_CN) ^ ~(I_CK ^ I_CN)
+
+tell "I_AK | I_AN"
+tell "I_BK | I_BN"
+tell "I_CK | I_CN"
+
+tell "~I_AK | ~I_AN"
+tell "~I_BK | ~I_BN"
+tell "~I_CK | ~I_CN"
+
+
+// Q3.3: Puzzle 1
+// A says "I am both a knight and a knave."
+// B says nothing.
+// C says nothing.
+// Direct translation version:  (I_AK => (I_AK ^ I_AN)) ^ (I_AN => ~(I_AK ^ I_AN))
+// CNF version:                 (~I_AK | I_AN) ^ (~I_AN | ~I_AK) 
+// tell "(~I_AK | I_AN) ^ (~I_AN | ~I_AK)"
+// Results: A is a knave
+    // I_AK: not entailed
+    // ~I_AK: entailed
+    // I_AN: entailed
+    // ~I_AN: not entailed
+    // I_BK:not entailed
+    // ~I_BK: not entailed
+    // I_BN: not entailed
+    // ~I_BN: not entailed
+    // I_CK: not entailed
+    // ~I_CK: not entailed
+    // I_CN: not entailed
+    // ~I_CN: not entailed
+
+
+// Q3.3: Puzzle 2
+// A says "B and I are both knaves."
+// B says nothing.
+// C says nothing.
+// Direct translation version:  (I_AK => (I_BN ^ I_AN)) ^ (I_AN => ~(I_BN ^ I_AN))
+// CNF version:                 (~I_AK | I_BN) ^ (~I_AK | I_AN) ^ (~I_AN | ~I_BN) 
+// tell "(~I_AK | I_BN) ^ (~I_AK | I_AN) ^ (~I_AN | ~I_BN)"
+// Results: A is a knave, B is a knight.
+    // I_AK: not entailed
+    // ~I_AK: entailed
+    // I_AN: entailed
+    // ~I_AN: not entailed
+    // I_BK: entailed
+    // ~I_BK: not entailed
+    // I_BN: not entailed
+    // ~I_BN: entailed
+    // I_CK: not entailed
+    // ~I_CK: not entailed
+    // I_CN: not entailed
+    // ~I_CN: not entailed
+
+
+// Q3.3: Puzzle 3
+// A says "B and I are the same kind."
+// B says "A and I are of different kinds."
+// C says nothing.
+
+// Direct translation version (both axioms in conjunction):  
+//  1) (I_AK ^ I_BK) | (I_AN ^ I_BK)
+//  2) (I_BK ^ I_AN) | (I_BN ^ I_AN)
+// CNF version (both axioms in conjunction):                 
+//  1) (I_AK | I_AN) ^ (I_AK | I_BK) ^ (I_BK | I_AN) ^ (I_BK)
+//  2) (I_BK | I_BN) ^ (I_BK | I_AN) ^ (I_AN | I_BN) ^ (I_AN)
+// tell "(I_AK | I_AN) ^ (I_AK | I_BK) ^ (I_BK | I_AN) ^ (I_BK)"
+// tell "(I_BK | I_BN) ^ (I_BK | I_AN) ^ (I_AN | I_BN) ^ (I_AN)"
+// Results: A is a knave, B is a knight
+    // I_AK: not entailed
+    // ~I_AK: entailed
+    // I_AN: entailed
+    // ~I_AN: not entailed
+    // I_BK: entailed
+    // ~I_BK: not entailed
+    // I_BN: not entailed
+    // ~I_BN: entailed
+    // I_CK: not entailed
+    // ~I_CK: not entailed
+    // I_CN: not entailed
+    // ~I_CN: not entailed
+
+
+
+// Q3.3: Puzzle 4
+// 1) A says either "I am a knight." or "I am a knave.", but you don't know which.
+// 2) B says "A said `I am a knave`."
+// 3) B says "C is a knave."
+// 4) C says "A is a knight."
+// Direct translation version (all axioms in conjunction): 
+//  2) (I_BK => (I_AK => I_AN)) ^ (I_BN => (I_AN => I_AN))
+//  3) (I_BK => I_CN) ^ (I_BN => I_CK)
+//  4) (I_CK => I_AK) ^ (I_CN => I_AN)
+
+//tell "(I_BK => ((I_AK => I_AN) ^ (I_AN => I_AK)))"
+//tell "(~I_BK | ~I_AK | I_AN)
+//tell "(~I_BK | ~I_AN | I_AK)
+//tell "(I_BN => ((I_AK => I_AK) ^ (I_AN => I_AN)))"
+//tell "(I_BK => I_CN) ^ (I_BN => I_CK)"
+//tell "(I_CK => I_AK) ^ (I_CN => I_AN)"
+
+// Results: A is a knight, B is a knave, C is a knight.
+    // I_AK: entailed
+    // ~I_AK: not entailed
+    // I_AN: not entailed
+    // ~I_AN:entailed
+    // I_BK: not entailed
+    // ~I_BK: entailed
+    // I_BN: entailed
+    // ~I_BN: not entailed
+    // I_CK: entailed
+    // ~I_CK: not entailed
+    // I_CN:  not entailed
+    // ~I_CN: entailed
+
+
+// Q3.3: Puzzle 5
+// 1) A says "B and I are the same."
+// 2) B says "C is a knave."
+// 3) C says "A and I are different."
+// Direct translation version (all axioms in conjunction):  
+//  1) (I_AK => (I_AK ^ I_BK)) ^ (I_AN => (I_AN ^ I_BK))
+//  2) (I_BK => I_CN) ^ (I_BN => ~I_CN)
+//  3) (I_CK => (I_CK ^ I_AN)) ^ (I_CN => (I_CN ^ I_AN))
+
+// tell "(I_AK => (I_AK ^ I_BK)) ^ (I_AN => (I_AN ^ I_BK))"
+// tell "(I_BK => I_CN) ^ (I_BN => ~I_CN)"
+// tell "(I_CK => (I_CK ^ I_AN)) ^ (I_CN => (I_CN ^ I_AN))"
+// Results: A is a knave, B is a knight, C is a knave.
+    // I_AK: not entailed
+    // ~I_AK: entailed
+    // I_AN: entailed
+    // ~I_AN: not entailed
+    // I_BK: entailed
+    // ~I_BK: not entailed
+    // I_BN: not entailed
+    // ~I_BN: entailed
+    // I_CK: not entailed
+    // ~I_CK: entailed
+    // I_CN: entailed
+    // ~I_CN: not entailed
+
+
+// Q3.4 Your Puzzle
+// A, B, C are knaves
+
+// 1) A says "B is a knight"
+// 2) B says "A is not a knight and not a knave"
+// 3) C says "B and A are of different kinds"
+
+// Direct translation version (all axioms in conjunction):  
+//  1) (I_AK => I_BK) ^ (I_AN => I_BN)
+//  2) (I_BK => (~I_AK ^ ~I_AN)) ^ (I_BN => ~(~I_AK ^ ~I_AN))
+//  3) (I_CK => (I_BK | I_AK)) ^ (I_CN =>(I_BK ^ I_AK) | (I_BN ^ I_AN))
+
+// tell "(I_AK => I_BK) ^ (I_AN => I_BN)"
+// tell "(I_BK => (~I_AK ^ ~I_AN)) ^ (I_BN => ~(~I_AK ^ ~I_AN))"
+// tell "(I_CK => (I_BK | I_AK)) ^ (I_CN =>((I_BK ^ I_AK) | (I_BN ^ I_AN)))"
+// Results: A is a knave, B is a knave, C is a knave.
+    // I_AK: not entailed
+    // ~I_AK: entailed
+    // I_AN: entailed
+    // ~I_AN: not entailed
+    // I_BK: not entailed
+    // ~I_BK: entailed
+    // I_BN: entailed
+    // ~I_BN: not entailed
+    // I_CK: not entailed
+    // ~I_CK: entailed
+    // I_CN: entailed
+    // ~I_CN: not entailed
+
+
+// CLASS PUZZZLEEEEEEE /////
+
+// A says "B and I are not the same"
+// B says "A and C are knaves"
+// C says "neither B nor A are knaves"
+
+// Direct translation version:  
+//
+tell "(I_AK => (I_BN^I_AK))^(I_AN => (I_AN^I_BN))"
+//tell "(I_BK => (I_CN ^ I_AN)) ^ (I_BN => ~(I_CN^I_AN))"
+tell "(I_BK => (I_CN ^ I_AN)) ^ (I_BN => (I_CK^I_AK))"
+//tell "(I_CK => ~(I_BN | I_AN)) ^ (I_CN => (I_BN|I_AN))"
+tell "(I_CK => (I_BK ^ I_AK)) ^ (I_CN => ~(I_BK^I_AK))"
+show-kb
+
+// Q3.1: Design the queries
+// Inhabitant A - Knight: I_AK, Knave: I_AN. 
+// Inhabitant B - Knight: I_BK, Knave: I_BN. 
+// Inhabitant C - Knight: I_CK, Knave: I_CN.
+// 12 queries, 4 per each inhabitant
+
+ask "I_AK"
+ask "~I_AK"
+ask "I_AN"
+ask "~I_AN"
+ask "I_BK"
+ask "~I_BK"
+ask "I_BN"
+ask "~I_BN"
+ask "I_CK"
+ask "~I_CK"
+ask "I_CN"
+ask "~I_CN"
+
+quit
+

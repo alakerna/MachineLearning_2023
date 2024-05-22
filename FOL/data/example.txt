@@ -1,0 +1,48 @@
+echo on
+new-kb
+
+///////////////////////////////////////////////////////////////
+//               Tell: Assert Axioms and Facts
+///////////////////////////////////////////////////////////////
+
+// a, b, and c stands for awesome, brilliant, and clever, respectively
+tell "a_scott => b_scott"
+tell "b_scott <=> c_scott"
+tell "a_joe => b_joe"
+tell "b_joe <=> c_joe"
+tell "random_1 <=> random_2"
+
+// Explain the following proposition
+// a_scott means that scott is awesome. This means we are adding to our KB a true literal,
+// as this proposition will always translate to true. (0.2 Marks)
+tell "a_scott"
+// b_scott: scott is brilliant
+// b_joe: joe is brilliant
+// this axiom is saying that either scott or joe can be brilliant, but not both. (0.3 Marks)
+tell "(b_scott | b_joe) ^ ~(b_scott ^ b_joe)"
+
+
+///////////////////////////////////////////////////////////////
+//                     Ask: Make Queries
+///////////////////////////////////////////////////////////////
+ask  "random_1"
+// Your answer here (0.1 Marks): not entailed. We know nothing about random_1, therefore cannot make any conclusions, 
+// so it is not entailed.
+ask  "random_2"
+// Your answer here (0.1 Marks): not entailed. Since we know nothing about random_1, and we also know nothing about random_2, 
+// so it's also not entailed.
+ask  "c_scott"
+// Your answer here (0.1 Marks): entailed. Since a_scott is true, then b_scott is also true. 
+// So from the bidirectionality iff b_scott is true then c_scott is true. Therefore it is entailed.
+ask  "~c_scott"
+// Your answer here (0.1 Marks): not entailed. Since c_scott is entailed, ~c_scott cannot be entailed or it would introduce
+// a contradiction. 
+ask  "c_joe"
+// Your answer here (0.1 Marks): not entailed. We know that either joe or scott can be brilliant but not both, so since scott is brilliant, 
+// b_joe is false. And iff b_joe is false then c_joe is also false, therefore not entailed. 
+
+ask "~c_joe"
+
+quit
+
+
