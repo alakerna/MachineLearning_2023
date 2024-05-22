@@ -1,0 +1,100 @@
+NODE PAIR 1:
+-----------
+
+Start node id: 24959526
+End node id: 3588763428
+
+
+Result of Planner        |     BFSPlanner    |      DFSPlanner   | UniformCostPlanner|
+Elapsed Time(ms)(max:300)|         21        |         207       |         84        |
+Number of nodes expanded |        11382      |        7812       |        6615       |
+Path found?              |         Yes       |         Yes       |         Yes       |
+Path cost                |     7088.140149   |    41762.116117   |     3795.279988   |
+
+Result of Planner        |GreedyBestFirstPlanner|    AStarPlanner   | 
+Elapsed Time(ms)(max:300)|          44          |         16        |
+Number of nodes expanded |          174         |        3688       |
+Path found?              |          Yes         |         Yes       |
+Path cost                |       8645.540961    |     3795.279988   |
+
+--------------------------------------------------
+NODE PAIR 2:  (RELATIVELY CLOSE)
+------------
+Start node id: 391068877
+End node id: 21436507
+
+
+Result of Planner        |     BFSPlanner    |      DFSPlanner   | UniformCostPlanner|
+Elapsed Time(ms)(max:300)|         14        |         189       |         18        |
+Number of nodes expanded |        19474      |        15514      |        11708      |
+Path found?              |         Yes       |         Yes       |         Yes       |
+Path cost                | 7088.14412.931063 |    44745.653497   |     9244.947025   |
+
+Result of Planner        |GreedyBestFirstPlanner|    AStarPlanner   | 
+Elapsed Time(ms)(max:300)|           0          |          4        |
+Number of nodes expanded |          324         |        3293       |
+Path found?              |          Yes         |         Yes       |
+Path cost                |      15066.640178    |     9244.947025   |
+
+--------------------------------------------------
+NODE PAIR 3:  (ONE POINT ON HIGHWAY, OTHER NORTH) : NO PATHS FOUND
+------------
+Start node id: 416166269
+End node id: 3458800
+
+
+Result of Planner        |     BFSPlanner    |      DFSPlanner   | UniformCostPlanner|
+Elapsed Time(ms)(max:300)|         33        |         DNT       |         54        |
+Number of nodes expanded |        29604      |        15800      |        29604      |
+Path found?              |         No        |          No       |          No       |
+Path cost                |          -        |          -        |          -        |
+
+Result of Planner        |GreedyBestFirstPlanner|    AStarPlanner   | 
+Elapsed Time(ms)(max:300)|         107          |        292        |
+Number of nodes expanded |        29604         |        29604      |
+Path found?              |          No          |         No        |
+Path cost                |          -           |          -        |
+
+
+--------------------------------------------------
+NODE PAIR 4:  (ONE POINT UNDER HIGHWAY, OTHER NORTH)
+------------
+
+Start node id: 7231187584
+End node id: 7575825321
+
+
+Result of Planner        |     BFSPlanner    |      DFSPlanner   | UniformCostPlanner|
+Elapsed Time(ms)(max:300)|         21        |         DNT       |         34        |
+Number of nodes expanded |        29505      |        15579      |        29515      |
+Path found?              |         Yes       |          No       |         Yes       |
+Path cost                |    20652.348263   |          -        |    12085.273338   |
+
+Result of Planner        |GreedyBestFirstPlanner|    AStarPlanner   | 
+Elapsed Time(ms)(max:300)|           1          |        48         |
+Number of nodes expanded |          643         |       26888       |
+Path found?              |          Yes         |        Yes        |
+Path cost                |       27646.443313   |    12085.273338   |
+
+
+--------------------------------------------------
+NODE PAIR 5:  
+------------
+
+Start node id: 391068877
+End node id: 21436507
+
+
+Result of Planner        |     BFSPlanner    |      DFSPlanner   | UniformCostPlanner|
+Elapsed Time(ms)(max:300)|         21        |         189       |         18        |
+Number of nodes expanded |        19474      |        15514      |        11708      |
+Path found?              |         Yes       |         Yes       |         Yes       |
+Path cost                |    14412.931063   |    44745.653497   |     9244.947025   |
+
+Result of Planner        |GreedyBestFirstPlanner|    AStarPlanner   | 
+Elapsed Time(ms)(max:300)|           0          |        4          |
+Number of nodes expanded |          324         |       3293        |
+Path found?              |          Yes         |        Yes        |
+Path cost                |      15066.640178    |     9244.947025   |
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+<bounds minlat="-1.0" minlon="-1.0" maxlat="10.0" maxlon="10.0"/>
+<node id="20979739" uid="1768286" lat="0.0" lon="0.0"/>
+ <node id="20979740" uid="1768286" lat="1.414213562" lon="1.414213562"/>
+ <node id="20979741" uid="40964" lat="1.732050808" lon="1.732050808"/>
+ <node id="20979742" uid="40964" lat="3.714213562" lon="4.014213562"/>
+ <node id="20979743" uid="1768286" lat="2.6" lon="5.0"/>
+ <node id="20979744" uid="1768286" lat="3.705" lon="1.0"/>
+ 
+ <way id="4000035" visible="true" version="17" changeset="86949407" timestamp="2020-06-22T00:36:34Z" user="andrewpmk" uid="1679">
+  <tag k="oneway" v="yes"/>
+  <nd ref="20979739"/>
+  <nd ref="20979741"/>
+  <nd ref="20979743"/>
+  <nd ref="20979744"/>
+  <tag k="highway" v="secondary"/>
+  <tag k="name" v="Queen's Park Crescent West"/>
+ </way>
+ 
+  <way id="4000036" visible="true" version="17" changeset="86949407" timestamp="2020-06-22T00:36:34Z" user="andrewpmk" uid="1679">
+  <nd ref="20979739"/>
+  <nd ref="20979743"/>
+  <tag k="highway" v="secondary"/>
+  <tag k="name" v="Queen's Park Crescent West"/>
+  <tag k="old_ref" v="11A"/>
+  <tag k="oneway" v="yes"/>
+  <tag k="sidewalk" v="separate"/>
+  <tag k="surface" v="asphalt"/>
+ </way>
+ 
+  <way id="4000037" visible="true" version="17" changeset="86949407" timestamp="2020-06-22T00:36:34Z" user="andrewpmk" uid="1679">
+  <nd ref="20979739"/>
+  <nd ref="20979740"/>
+  <nd ref="20979742"/>
+   <nd ref="20979744"/>
+  <tag k="highway" v="secondary"/>
+  <tag k="name" v="Queen's Park Crescent West"/>
+  <tag k="old_ref" v="11A"/>
+  <tag k="oneway" v="yes"/>
+  <tag k="sidewalk" v="separate"/>
+  <tag k="surface" v="asphalt"/>
+ </way>
+  <way id="4000038" visible="true" version="17" changeset="86949407" timestamp="2020-06-22T00:36:34Z" user="andrewpmk" uid="1679">
+  <nd ref="20979742"/>
+   <nd ref="20979743"/>
+  <tag k="highway" v="secondary"/>
+  <tag k="name" v="Queen's Park Crescent West"/>
+  <tag k="old_ref" v="11A"/>
+  <tag k="oneway" v="yes"/>
+  <tag k="sidewalk" v="separate"/>
+  <tag k="surface" v="asphalt"/>
+ </way>
+ 
+</osm>

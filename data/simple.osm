@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+ <bounds minlat="43.6599200" minlon="-79.4017800" maxlat="43.6666500" maxlon="-79.3856300"/>
+ <node id="0" visible="true" uid="0" lat="43.6643103" lon="-79.3925051">
+ </node>
+  <node id="1" visible="true" uid="1" lat="43.6642103" lon="-79.3924162">
+ </node>
+  <node id="2" visible="true" uid="2" lat="43.6644103" lon="-79.3924162">
+ </node>
+  <node id="3" visible="true" uid="3" lat="43.6643103" lon="-79.3922162">
+ </node>
+
+ <way id="01" visible="true" uid="01">
+  <nd ref="0"/>
+  <nd ref="1"/>
+  <tag k="highway" v="secondary"/>
+ </way>
+ 
+  <way id="02" visible="true" uid="02">
+  <nd ref="0"/>
+  <nd ref="2"/>
+  <tag k="highway" v="secondary"/>
+ </way>
+
+  <way id="13" visible="true" uid="13">
+  <nd ref="1"/>
+  <nd ref="3"/>
+  <tag k="highway" v="stairs"/>
+  <tag k="lanes" v="1"/>
+  <tag k="maxspeed" v="100"/>
+ </way>
+
+  <way id="23" visible="true" uid="23">
+  <nd ref="2"/>
+  <nd ref="3"/>
+  <tag k="highway" v="secondary"/>
+  <tag k="lanes" v="4"/>
+  <tag k="maxspeed" v="40"/>
+ </way>
+ 
+</osm>

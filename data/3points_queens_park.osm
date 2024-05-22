@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+ <bounds minlat="43.6599200" minlon="-79.4017800" maxlat="43.6666500" maxlon="-79.3856300"/>
+ <node id="0" visible="true" uid="0" lat="43.6643103" lon="-79.3925051">
+ </node>
+  <node id="1" visible="true" uid="1" lat="43.6643103" lon="-79.3926162">
+ </node>
+  <node id="2" visible="true" uid="2" lat="43.6644214" lon="-79.3926162">
+ </node>
+
+ <way id="01" visible="true" uid="01">
+  <nd ref="0"/>
+  <nd ref="1"/>
+  <tag k="highway" v="secondary"/>
+ </way>
+ 
+  <way id="12" visible="true" uid="12">
+  <nd ref="1"/>
+  <nd ref="2"/>
+  <tag k="highway" v="secondary"/>
+ </way>
+ 
+</osm>
