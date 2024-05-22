@@ -1,0 +1,31 @@
+Explain the rationale behind the enhancements you make for Q2(b) and Q2(c) and cite any papers you have consulted in this file.
+Also, summarize your final choice of selection and backpropogation strategies for the competitive portion in (d).  
+
+(b) Your selection strategy
+I have used the following approach: Progressive Widening. 
+
+The term c determines the favoring of exploration over exploitation. But it is difficult to find an optimal value of c that will not get stuck in suboptimal solutions. 
+
+So progressive widening adjusts c dynamically based on how many times the node has been visited.
+    node.getVisitCount() ^  0.3
+This makes the algo leaning more towards exploration when it hasn't explored many nodes yet, but as time goes on it will focus on more promising solutions. 
+
+This is taken from this research paper [1], where it discusses the effect and procedure of progressive widening. 
+
+(c) Your backpropagation strategy
+I have used the following approach: Decaying Rewards. 
+
+This is where I multiply the reward value by gamma_const (I set it equal to 0.9 to heavily focus on the later nodes (later rwards)), as this is applied on the leaf and current nodes. Gamma should be set between  0,1 as referenced in this paper [2], I chose 0.9. 
+
+(d) Your overall strategy
+
+I did not implement anything new, same as before. 
+
+[References]
+
+[1] Couëtoux, A., Hoock, JB., Sokolovska, N., Teytaud, O., Bonnard, N. (2011). 
+Continuous Upper Confidence Trees. In: Coello, C.A.C. (eds) Learning and Intelligent Optimization. LION 2011. Lecture Notes in Computer Science, vol 6683. Springer, Berlin, Heidelberg.
+
+[2] C. B. Browne et al., "A Survey of Monte Carlo Tree Search Methods," 
+in IEEE Transactions on Computational Intelligence and AI in Games, vol. 4, no. 1, pp. 1-43, March 2012, doi: 10.1109/TCIAIG.2012.2186810.
+
