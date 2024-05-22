@@ -1,0 +1,15 @@
+
+Laplace smoothing adds a small constant value to all counts in the table, effectively smoothing out the probabilities and preventing them from being zero. The formula is:
+
+p_new(i,j) = (count(i,j) + alpha / (count(i) + num_states)
+
+where count(i,j) : transition or emission counts from state i to state j or emission of word j at state i.
+
+In the HMM implementation provided, we can apply Laplace smoothing by adding 1 to all the counts in the probability tables before computing the probabilities. 
+In the code: 
+
+In the modified fit method:
+-    add alpha to the counts in the transition and emission probability tables before computing the probabilities. 
+-    add _sizeStateSpace and DataLoader.numWords, respectively, to the denominators of the transition and emission probabilities (that's to account for the additional count from the smoothing)
+
+alpha in this code is 0.87
