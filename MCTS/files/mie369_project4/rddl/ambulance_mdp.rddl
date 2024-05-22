@@ -1,0 +1,159 @@
+domain ambulance_mdp {
+	
+	requirements = {
+		reward-deterministic,
+		constrained-state
+	};
+	
+	types {
+		ambulance : object;
+		xpos : object;
+		ypos : object;
+	};
+	
+	pvariables {
+		/////////////////////////////////////////////////////////////
+		//////////////////////// non-fluents ////////////////////////
+		/////////////////////////////////////////////////////////////
+		
+		// Penalties
+		NON_ANSWERED_PENALTY 		: {non-fluent, real, default = 0};
+		ON_THE_WAY_PENALTY 			: {non-fluent, real, default = 0};
+		
+		// Location-dependent probability of the arrival of emergency calls 
+		CALL_PROB(xpos, ypos)		: {non-fluent, real, default = 0};			
+		
+		// Locations of hospitals are fixed 
+		HOSPITAL(xpos, ypos) 		: {non-fluent, bool, default = false};  		// each grid point can either be a hospital or not
+		
+		// Defines relationships of x and y positions (should be specified in your rddl instance specification) 
+		// For example, 'EAST(x1, x2) = true' means 'x1' is located at the eastern side of 'x2'
+		NORTH(ypos, ypos) 	: {non-fluent, bool, default = false};
+		SOUTH(ypos, ypos) 	: {non-fluent, bool, default = false};
+		EAST(xpos, xpos) 	: {non-fluent, bool, default = false};
+		WEST(xpos, xpos) 	: {non-fluent, bool, default = false};
+	
+	
+		/////////////////////////////////////////////////////////////
+		//////////////////////// state-fluents //////////////////////
+		/////////////////////////////////////////////////////////////
+		
+		activeCallAt(xpos, ypos) 			: {state-fluent, bool, default = false};	// an emergency call is pending at location
+		patientOn(ambulance)				: {state-fluent, bool, default = false};
+		ambulanceAt(ambulance, xpos, ypos)	: {state-fluent, bool, default = false}; 
+		
+		/////////////////////////////////////////////////////////////
+		//////////////////////// action-fluents /////////////////////
+		/////////////////////////////////////////////////////////////
+		
+		moveEast(ambulance) 	: {action-fluent, bool, default = false};
+		moveWest(ambulance) 	: {action-fluent, bool, default = false};
+		moveNorth(ambulance) 	: {action-fluent, bool, default = false};
+		moveSouth(ambulance) 	: {action-fluent, bool, default = false};
+		pickPatient(ambulance) 	: {action-fluent, bool, default = false};
+	};
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	//////////////////////// Conditional probability functions ////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////
+	
+	cpfs {  //TODO: Write the CPFs
+
+		ambulanceAt'(?a, ?x, ?y) = 
+
+			if ( ambulanceAt(?a, ?x, ?y) ) then
+				
+				// if move action is taken, but there's no neighboring cell in that direction, then remains true
+				[if ( (moveEast(?a) ^ ~exists_{?x2 : xpos} [EAST(?x2, ?x)]) | 
+						(moveWest(?a) ^ ~exists_{?x2 : xpos} [WEST(?x2, ?x)]) | 
+						(moveNorth(?a) ^ ~exists_{?y2 : ypos} [NORTH(?y2, ?y)]) | 
+						(moveSouth(?a) ^ ~exists_{?y2 : ypos} [SOUTH(?y2, ?y)]) ) then true
+
+				// if no move action is taken, then remains true 
+				else if ( moveEast(?a) + moveWest(?a) + moveNorth(?a) + moveSouth(?a) == 0 ) then true
+							
+				// otherwise, move to some other location
+				else false]
+
+			// ambulance ?a is not at (?x, ?y): check whether an ambulance moves to (?x, ?y) via given action 
+			else if ( exists_{?x2 : xpos, ?y2 : ypos} [ ambulanceAt(?a, ?x2, ?y2) ^ ( (moveEast(?a) ^ EAST(?x, ?x2) ^ (?y2 == ?y)) | 
+																							(moveWest(?a) ^ WEST(?x, ?x2) ^ (?y2 == ?y)) | 
+																							(moveNorth(?a) ^ NORTH(?y, ?y2) ^ (?x == ?x2)) | 
+																							(moveSouth(?a) ^ SOUTH(?y, ?y2) ^ (?x == ?x2)) ) ] ) then true 			
+			else false;
+		
+
+		activeCallAt'(?x, ?y) =
+
+
+			//If an empty ambulance picks up person at actival call cell
+			if (exists_{?a : ambulance }[ activeCallAt(?x, ?y) ^ ambulanceAt(?a, ?x, ?y) ^ pickPatient(?a)] ) then false
+
+			// Or, if the cell is not a hospital and has no active call, a Bernoulli arrival at each cell
+			else if (~activeCallAt(?x, ?y)^~HOSPITAL(?x,?y)) then Bernoulli(CALL_PROB(?x, ?y))	
+			
+			// Otherwise, remains the same value
+			else activeCallAt(?x,?y);
+
+
+		patientOn'(?a) = 
+			// If an empty ambulance picks up person at actival call cell
+			if ( exists_{?x : xpos, ?y : ypos}  
+				[ activeCallAt(?x, ?y) ^ ambulanceAt(?a, ?x, ?y) ^ ~patientOn(?a) ^ pickPatient(?a) ] ) then true
+			
+			// drop off patient
+			else if ( exists_{?x : xpos, ?y : ypos} [patientOn(?a) ^ HOSPITAL(?x, ?y) ^ ambulanceAt(?a, ?x, ?y)]) then false
+			
+			// if you already had a patient on your ambulance from the previous state
+			// remain true
+			else patientOn(?a);
+	};
+	
+	/////////////////////////////////////////////////////////
+	//////////////////////// Rewards ////////////////////////
+	/////////////////////////////////////////////////////////
+		
+	////// TODO: Define the reward here
+	// Note: the values of necessary non-fluents should be specified in your instance file
+	//reward = ;
+	
+	reward = NON_ANSWERED_PENALTY * [sum_{?x : xpos, ?y : ypos} [activeCallAt(?x,?y)]] + ON_THE_WAY_PENALTY * [sum_{?a: ambulance}[ patientOn(?a)]];
+
+
+
+	////////////////////////////////////////////////////////////////////////
+	//////////////////////// Constraints on states  ////////////////////////
+	////////////////////////////////////////////////////////////////////////	
+	
+	state-action-constraints {
+		// EAST, WEST, NORTH, SOUTH defined properly (unique and symmetric)
+		forall_{?x: xpos} [(sum_{?x2 : xpos} WEST(?x,?x2)) <= 1];
+		forall_{?x: xpos} [(sum_{?x2 : xpos} EAST(?x,?x2)) <= 1];
+		forall_{?y: ypos} [(sum_{?y2 : ypos} NORTH(?y,?y2)) <= 1];
+		forall_{?y: ypos} [(sum_{?y2 : ypos} SOUTH(?y,?y2)) <= 1];
+		forall_{?x : xpos, ?x2 : xpos} [ EAST(?x,?x2) <=> WEST(?x2,?x) ];
+		forall_{?y : ypos, ?y2 : ypos} [ SOUTH(?y,?y2) <=> NORTH(?y2,?y) ];
+		
+		// Ambulance cannot disappear from the map and can only exist at one location at a time
+		forall_{?a : ambulance} [(sum_{?x : xpos, ?y : ypos} ambulanceAt(?a, ?x, ?y)) == 1];		
+		
+		// TODO: Add any other action pre-conditions as needed
+
+		// one call at most for each cell at given time step
+		forall_{?x : xpos, ?y : ypos} [activeCallAt(?x, ?y) <= 1];
+
+		// Note4: Max of one action per ambulance.
+		//change it to ==1 our version
+		forall_{?a : ambulance} [(moveEast(?a) + moveWest(?a) + moveNorth(?a) + moveSouth(?a) + pickPatient(?a)) <= 1];
+
+		// Max one patient at a time per ambulance
+		forall_{?a: ambulance} [ pickPatient(?a) + patientOn(?a) <= 1];
+
+		// Note2: two ambulances cannot be on the same block
+		// forall_{?a : ambulance} [(sum_{?x : xpos, ?y : ypos} ambulanceAt(?a,?x,?y)) <=1 ]
+		forall_{?x : xpos, ?y : ypos} [(sum_{?a : ambulance} ambulanceAt(?a, ?x, ?y)) <= 1 ];
+		//forall_{?a : ambulance} [exists_{?x : xpos, ?y : ypos} [ambulanceAt(?a,?x,?y)]^~exists_{?am2 : ambulance} [ambulanceAt(?am2,?x,?y)^(?am2~=?a)^(pickPatient(?a)+pickPatient(?am2)>=1)]];		
+
+	};	
+}

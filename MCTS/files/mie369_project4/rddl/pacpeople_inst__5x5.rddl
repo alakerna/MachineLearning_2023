@@ -1,0 +1,56 @@
+non-fluents nf_pacpeople_inst__5x5 {
+	domain = pacpeople_mdp; 
+
+	objects { 
+		pacperson : {p0, p1};
+		xpos 	  : {x1, x2, x3, x4, x5};
+		ypos 	  : {y1, y2, y3, y4, y5};
+	}; 
+
+	non-fluents {
+		REGENERATE-PROB(x2, y3) = 0.1;
+		REGENERATE-PROB(x3, y4) = 0.1;
+		SOLID-CELL(x2, y2);
+		SOLID-CELL(x2, y4);
+		SOLID-CELL(x4, y2);
+		SOLID-CELL(x4, y4);
+		
+		// Define relationships between coordinates
+		EAST(x2, x1);
+		EAST(x3, x2);
+		EAST(x4, x3);
+		EAST(x5, x4);
+		
+		WEST(x1, x2);
+		WEST(x2, x3);
+		WEST(x3, x4);
+		WEST(x4, x5);
+
+		NORTH(y2, y1);
+		NORTH(y3, y2);
+		NORTH(y4, y3);
+		NORTH(y5, y4);
+		
+		SOUTH(y1, y2);
+		SOUTH(y2, y3);
+		SOUTH(y3, y4);
+		SOUTH(y4, y5);
+ 	}; 
+}
+
+instance pacpeople_inst__5x5 { 
+	domain = pacpeople_mdp; 
+
+ 	non-fluents = nf_pacpeople_inst__5x5;
+
+	init-state { 
+		pacperson-at-cell(p0, x1, y1);
+		pacperson-at-cell(p1, x5, y1);
+	};
+
+	max-nondef-actions = 2;
+
+	horizon = 40;
+
+	discount = 1.0;
+} 

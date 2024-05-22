@@ -1,0 +1,276 @@
+///////////////////////////////////////////////////////////////////  
+/////		1 x 3 simple ambulance domain		     //////
+///////////////////////////////////////////////////////////////////  
+
+// Note: if not specified explicitly in this instance file, the default values defined in the domain file will be used 
+
+// Specify the non-fluents of this example
+non-fluents ambulance_nf_1x3 {
+	
+	// Will use the ambulance_mdp domain
+	domain = ambulance_mdp;
+	
+	// Instantiate objects: a single ambulance on 1 x 3 grid
+	objects {
+		ambulance : {a1};
+		xpos : {x1, x2, x3};
+		ypos : {y1};
+	};
+	
+	// Define non-fluents
+	non-fluents {
+		// non-fluents related to penalty terms
+		NON_ANSWERED_PENALTY = -0.5;
+		ON_THE_WAY_PENALTY = -0.1;
+		
+		// Specify the Bernoulli arrival probability of emergency calls at each location
+		CALL_PROB(x1, y1) = 0.1;
+		CALL_PROB(x2, y1) = 0.1;
+		
+		// Specify the location of the hospital; No emergency calls at the hospital
+		HOSPITAL(x3, y1);
+		CALL_PROB(x3, y1) = 0;
+		
+		// Specify the relationships of locations
+		WEST(x1, x2);
+		WEST(x2, x3);
+		EAST(x2, x1);
+		EAST(x3, x2);
+	};
+}
+
+instance ambulance_inst_1x3 {
+
+	// Specify the doamin
+	domain = ambulance_mdp;
+	
+	// Specifiy the non-fluent to use
+	non-fluents = ambulance_nf_1x3;
+	
+	// Initial state to start with (state-fluents not specified here will just take the default value)
+	init-state {
+		ambulanceAt(a1, x1, y1);
+	};
+	
+	// Number of concurrent actions
+	max-nondef-actions = 1;
+	 
+	horizon = 40;
+	discount = 1.0;
+}
+
+
+///////////////////////////////////////////////////////////////////  
+/////			3 x 3 ambulance domain	       	     //////
+///////////////////////////////////////////////////////////////////
+non-fluents ambulance_nf_3x3 {
+
+	domain = ambulance_mdp;
+	
+	// a single hospital and ambulance on 3 x 3 grid
+	objects {
+		ambulance : {a1};
+		xpos : {x1, x2, x3};
+		ypos : {y1, y2, y3};
+	};
+	
+	non-fluents {
+		NON_ANSWERED_PENALTY = -0.5;
+		ON_THE_WAY_PENALTY = -0.1;
+		CALL_PROB(x1, y2) = 0.1;
+		CALL_PROB(x2, y1) = 0.1;
+		
+		HOSPITAL(x3, y2);
+		CALL_PROB(x3, y2) = 0;
+		
+		SOUTH(y1, y2);
+		SOUTH(y2, y3);
+		
+		NORTH(y2, y1);
+		NORTH(y3, y2);
+		
+		EAST(x2, x1);
+		EAST(x3, x2);
+		
+		WEST(x1, x2);
+		WEST(x2, x3);
+	};
+}
+
+instance ambulance_inst_3x3 {
+	domain = ambulance_mdp;
+	non-fluents = ambulance_nf_3x3;
+	
+	init-state {
+		ambulanceAt(a1, x1, y1);
+	};
+	
+	max-nondef-actions = 1;
+	horizon = 40;
+	discount = 1.0;
+}
+
+
+///////////////////////////////////////////////////////////////////  
+/////			3 x 4 ambulance domain		     //////
+///////////////////////////////////////////////////////////////////
+non-fluents ambulance_nf_3x4 {
+
+	domain = ambulance_mdp;
+	
+	// a single hospital and and ambulance on 4 x 4 grid (hence 15 emergency locations)
+	objects {
+		ambulance : {a1};
+		xpos : {x1, x2, x3, x4};
+		ypos : {y1, y2, y3};
+	};
+	
+	non-fluents {
+		NON_ANSWERED_PENALTY = -0.5;
+		ON_THE_WAY_PENALTY = -0.1;
+		CALL_PROB(x2, y2) = 0.1;
+		
+		HOSPITAL(x3, y2);
+		CALL_PROB(x3, y2) = 0;
+		
+		SOUTH(y1, y2);
+		SOUTH(y2, y3);
+		
+		NORTH(y2, y1);
+		NORTH(y3, y2);
+		
+		EAST(x2, x1);
+		EAST(x3, x2);
+		EAST(x4, x3);
+		
+		WEST(x1, x2);
+		WEST(x2, x3);
+		WEST(x3, x4);
+	};
+}
+
+instance ambulance_inst_3x4 {
+	domain = ambulance_mdp;
+	non-fluents = ambulance_nf_3x4;
+	
+	init-state {
+		ambulanceAt(a1, x1, y1);
+	};
+	
+	max-nondef-actions = 1;
+	horizon = 40;
+	discount = 1.0;
+}
+
+
+
+///////////////////////////////////////////////////////////////////  
+/////			4 x 4 ambulance domain		     //////
+///////////////////////////////////////////////////////////////////
+non-fluents ambulance_nf_4x4 {
+
+	domain = ambulance_mdp;
+	
+	// a single hospital and ambulance on 4 x 4 grid
+	objects {
+		ambulance : {a1,a2};
+		xpos : {x1, x2, x3, x4};
+		ypos : {y1, y2, y3, y4};
+	};
+	
+	non-fluents {
+		NON_ANSWERED_PENALTY = -0.5;
+		ON_THE_WAY_PENALTY = -0.1;
+		CALL_PROB(x1, y1) = 0.1;
+		CALL_PROB(x2, y3) = 0.1;
+		
+		HOSPITAL(x3, y2);
+		CALL_PROB(x3, y2) = 0;
+		
+		SOUTH(y1, y2);
+		SOUTH(y2, y3);
+		SOUTH(y3, y4);
+		
+		NORTH(y2, y1);
+		NORTH(y3, y2);
+		NORTH(y4, y3);
+		
+		EAST(x2, x1);
+		EAST(x3, x2);
+		EAST(x4, x3);
+		
+		WEST(x1, x2);
+		WEST(x2, x3);
+		WEST(x3, x4);
+	};
+}
+
+instance ambulance_inst_4x4 {
+	domain = ambulance_mdp;
+	non-fluents = ambulance_nf_4x4;
+	
+	init-state {
+		ambulanceAt(a1, x1, y1);
+		ambulanceAt(a2, x2, y2);
+		};
+	
+	max-nondef-actions = 1;
+	horizon = 80;
+	discount = 1.0;
+}
+
+///////////////////////////////////////////////////////////////////  
+/////			4 x 4 2 ambulance domain		     //////
+///////////////////////////////////////////////////////////////////
+non-fluents ambulance_nf_24x4 {
+
+	domain = ambulance_mdp;
+	
+	// a single hospital and ambulance on 4 x 4 grid
+	objects {
+		ambulance : {a1, a2};
+		xpos : {x1, x2, x3, x4};
+		ypos : {y1, y2, y3, y4};
+	};
+	
+	non-fluents {
+		NON_ANSWERED_PENALTY = -0.5;
+		ON_THE_WAY_PENALTY = -0.1;
+		CALL_PROB(x1, y1) = 0.1;
+		CALL_PROB(x2, y3) = 0.1;
+		
+		HOSPITAL(x3, y2);
+		CALL_PROB(x3, y2) = 0;
+		
+		SOUTH(y1, y2);
+		SOUTH(y2, y3);
+		SOUTH(y3, y4);
+		
+		NORTH(y2, y1);
+		NORTH(y3, y2);
+		NORTH(y4, y3);
+		
+		EAST(x2, x1);
+		EAST(x3, x2);
+		EAST(x4, x3);
+		
+		WEST(x1, x2);
+		WEST(x2, x3);
+		WEST(x3, x4);
+	};
+}
+
+instance ambulance_inst_24x4 {
+	domain = ambulance_mdp;
+	non-fluents = ambulance_nf_24x4;
+	
+	init-state {
+		ambulanceAt(a1, x1, y1);
+		//extra added
+		ambulanceAt(a2, x2, y2);
+	};
+	
+	max-nondef-actions = 1;
+	horizon = 40;
+	discount = 1.0;
+}

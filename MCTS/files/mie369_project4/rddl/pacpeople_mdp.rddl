@@ -1,0 +1,119 @@
+////////////////////////////////////////////////////////////////////
+// PacPeople Domain
+//
+// Author: Jihwan Jeong
+//
+// Written for MIE369-2021 Lab content
+// 
+////////////////////////////////////////////////////////////////////
+
+domain pacpeople_mdp {
+	
+	requirements = { 
+		constrained-state,
+		reward-deterministic
+	};
+	
+	types {
+  		pacperson 	: object;
+ 	  	xpos    	: object;
+ 	  	ypos		: object;
+	}; 
+	
+	pvariables { 
+	
+		// Probability of regeneration of pellets
+		REGENERATE-PROB(xpos, ypos) : { non-fluent, real, default = 0.05 }; 		  		
+		
+		// Solid cells
+		SOLID-CELL(xpos, ypos)		: { non-fluent, bool, default = false };
+		
+		// Defines relationships of x and y positions (should be specified in your rddl instance specification) 
+		// For example, 'EAST(x1, x2) = true' means 'x1' is located at the eastern side of 'x2'
+		NORTH(ypos, ypos) 	: { non-fluent, bool, default = false };
+		SOUTH(ypos, ypos) 	: { non-fluent, bool, default = false };
+		EAST(xpos, xpos) 	: { non-fluent, bool, default = false };
+		WEST(xpos, xpos) 	: { non-fluent, bool, default = false };	
+	
+		// Reward for eating a pellet
+		REWARD-PELLET		: { non-fluent, real, default = 1.0 };
+		
+		// Penalty for encoutering a Ghost
+		PENALTY-GHOST		: { non-fluent, real, default = -10.0 };
+		  		
+		// Cell states
+		pacperson-at-cell(pacperson, xpos, ypos)	: 	{ state-fluent, bool, default = false };
+		pellet-at-cell(xpos, ypos)					: 	{ state-fluent, bool, default = true };
+		
+		// Actions: 
+		moveEast(pacperson) 	: { action-fluent, bool, default = false };
+		moveWest(pacperson) 	: { action-fluent, bool, default = false };
+		moveNorth(pacperson) 	: { action-fluent, bool, default = false };
+		moveSouth(pacperson) 	: { action-fluent, bool, default = false };		
+	};
+  
+	cpfs {
+		
+		pacperson-at-cell'(?p, ?x, ?y) = 
+			if (SOLID-CELL(?x, ?y)) then false
+			 
+			else if ( pacperson-at-cell(?p, ?x, ?y) ) then
+				
+				// if move action is taken, but there's no neighboring cell in that direction, then remains true
+				[if ( (moveEast(?p) ^ ~exists_{?x2 : xpos} [EAST(?x2, ?x)]) | 
+		  			  (moveWest(?p) ^ ~exists_{?x2 : xpos} [WEST(?x2, ?x)]) | 
+		  			  (moveNorth(?p) ^ ~exists_{?y2 : ypos} [NORTH(?y2, ?y)]) | 
+		  			  (moveSouth(?p) ^ ~exists_{?y2 : ypos} [SOUTH(?y2, ?y)]) ) then true
+				
+				// if move action is taken, but there's a solid cell in that direction
+				else if ( (moveEast(?p) ^ exists_{?x2 : xpos} [EAST(?x2, ?x) ^ SOLID-CELL(?x2, ?y)]) | 
+		  			  	  (moveWest(?p) ^ exists_{?x2 : xpos} [WEST(?x2, ?x) ^ SOLID-CELL(?x2, ?y)]) | 
+		  			  	  (moveNorth(?p) ^ exists_{?y2 : ypos} [NORTH(?y2, ?y) ^ SOLID-CELL(?x, ?y2)]) | 
+		  			  	  (moveSouth(?p) ^ exists_{?y2 : ypos} [SOUTH(?y2, ?y) ^ SOLID-CELL(?x, ?y2)]) ) then true
+				
+				// if no move action is taken, then remains true 
+				else if ( moveEast(?p) + moveWest(?p) + moveNorth(?p) + moveSouth(?p) == 0 ) then true
+						  
+			  	// otherwise, move to some other location
+			  	else false]
+	
+			// PacPerson ?p is not at (?x, ?y): check whether a PacPerson moves to (?x, ?y) via given action 
+			else if ( exists_{?x2 : xpos, ?y2 : ypos} [ pacperson-at-cell(?p, ?x2, ?y2) ^ ( (moveEast(?p) ^ EAST(?x, ?x2) ^ (?y2 == ?y)) | 
+																						    (moveWest(?p) ^ WEST(?x, ?x2) ^ (?y2 == ?y)) | 
+																					  	    (moveNorth(?p) ^ NORTH(?y, ?y2) ^ (?x == ?x2)) | 
+																					  	    (moveSouth(?p) ^ SOUTH(?y, ?y2) ^ (?x == ?x2)) ) ] ) then true 			
+			else false;
+		
+		pellet-at-cell'(?x, ?y) =
+			// A solid cell cannot have a pellet 
+			if ( SOLID-CELL(?x, ?y) ) then false
+			
+			// If a PacPerson eats the pellet
+			else if ( exists_{?p : pacperson } [ pellet-at-cell(?x, ?y) ^ pacperson-at-cell(?p, ?x, ?y) ] ) then false
+
+			// Or, if it was true just remains true
+			else if ( pellet-at-cell(?x, ?y) ) then true
+			
+			// Otherwise, a Bernoulli arrival at each cell: each cell has a unique probability assigned to it
+			else 
+				Bernoulli(REGENERATE-PROB(?x, ?y));		
+	};
+  
+  	// Reward is given for each pellet eaten by a pacperson
+	reward = REWARD-PELLET * [ sum_{?x : xpos, ?y : ypos} [ exists_{?p : pacperson} [ pacperson-at-cell(?p, ?x, ?y) ^ pellet-at-cell(?x, ?y) ] ] ];   	
+  	
+	state-action-constraints {
+		// EAST, WEST, NORTH, SOUTH defined properly (unique and symmetric)
+		forall_{?x: xpos} [(sum_{?x2 : xpos} WEST(?x,?x2)) <= 1];
+		forall_{?x: xpos} [(sum_{?x2 : xpos} EAST(?x,?x2)) <= 1];
+		forall_{?y: ypos} [(sum_{?y2 : ypos} NORTH(?y,?y2)) <= 1];
+		forall_{?y: ypos} [(sum_{?y2 : ypos} SOUTH(?y,?y2)) <= 1];
+		forall_{?x : xpos, ?x2 : xpos} [ EAST(?x,?x2) <=> WEST(?x2,?x) ];
+		forall_{?y : ypos, ?y2 : ypos} [ SOUTH(?y,?y2) <=> NORTH(?y2,?y) ];
+		
+		// Pacperson cannot disappear from the map and can only exist at one location at a time
+		forall_{?p : pacperson} [(sum_{?x : xpos, ?y : ypos} pacperson-at-cell(?p, ?x, ?y)) == 1];		
+		// Max of one action per PacPerson.
+		forall_{?p : pacperson} [(moveEast(?p) + moveWest(?p) + moveNorth(?p) + moveSouth(?p)) <= 1];
+	};	
+}
